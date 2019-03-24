@@ -1,5 +1,5 @@
 //
-//  AddImageViewController.swift
+//  PairComputerViewController.swift
 //  MNRCH2
 //
 //  Created by Patty Case on 3/23/19.
@@ -9,14 +9,17 @@
 import UIKit
 import AVFoundation
 
-class AddImageViewController: UIViewController, UIImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UINavigationControllerDelegate {
-
-    let imagePicker = UIImagePickerController()
+class PairComputerViewController: UIViewController, UIImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UINavigationControllerDelegate {
+    
+    @IBOutlet weak var imageView: UIImageView!
+    var imagePicker = UIImagePickerController()
     var useCamera : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pickImageSourceAlert()
+        
+        imagePicker.delegate = self
+        getImage()
     }
     
     override func didReceiveMemoryWarning() {
@@ -31,21 +34,6 @@ class AddImageViewController: UIViewController, UIImagePickerControllerDelegate,
         return 1
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        if segue.destination is PairComputerViewController
-        {
-            let vc = segue.destination as? PairComputerViewController
-            vc?.useCamera = self.useCamera
-            if (self.useCamera) {
-                vc?.imagePicker.sourceType = .camera
-            } else {
-                vc?.imagePicker.sourceType = .photoLibrary
-            }
-            vc?.navigationItem.title = String.TAKE_A_PICTURE
-        }
-    }
-    
     /**
      Performs image recognition
      
@@ -56,44 +44,17 @@ class AddImageViewController: UIViewController, UIImagePickerControllerDelegate,
      
      - Returns:
      */
-//    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//
-//        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-//            imageView.image = image
-//            imageView.roundCornersForAspectFit(radius: 15)
-//            imagePicker.dismiss(animated: true, completion: nil)
-//
-//        } else {
-//            print("There was an error picking the image")
-//        }
-//    }
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
     
-    /**
-     Displays an alert to choose either the camera or the photo library as the image source
-     
-     - Parameter none:
-     
-     - Throws:
-     
-     - Returns:
-     */
-    func pickImageSourceAlert() {
-        let alert = UIAlertController(title: String.EMPTY, message: String.CAMERA_OR_PHOTO, preferredStyle: .alert)
-        alert.isModalInPopover = true
-        
-        alert.addAction(UIAlertAction(title: String.CAMERA, style: .default, handler: { (UIAlertAction) in
-            self.useCamera = true
-            self.navigationItem.title = String.TAKE_A_PICTURE
-            self.performSegue(withIdentifier: "showPairComputerView", sender: self)
-        }))
-        
-        alert.addAction(UIAlertAction(title: String.PHOTO_LIBRARY, style: .default, handler: { (UIAlertAction) in
-            self.useCamera = false
-            self.navigationItem.title = String.SELECT_A_PICTURE
-            self.performSegue(withIdentifier: "showPairComputerView", sender: self)
-        }))
-        self.present(alert,animated: true, completion: nil )
-    }
+            if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+                imageView.image = image
+                imageView.roundCornersForAspectFit(radius: 15)
+                imagePicker.dismiss(animated: true, completion: nil)
+    
+            } else {
+                print("There was an error picking the image")
+            }
+        }
     
     /**
      Called after image source is specified. If camera is chosen, camera permission is checked, and if allowed, the camera
@@ -107,9 +68,11 @@ class AddImageViewController: UIViewController, UIImagePickerControllerDelegate,
      */
     func getImage() {
         
-        // Check camera permission
         if (self.useCamera) {
             self.checkCameraPermission()
+            self.imagePicker.sourceType = .camera
+        } else {
+            self.imagePicker.sourceType = .photoLibrary
         }
         
         self.navigationItem.title = String.EMPTY
