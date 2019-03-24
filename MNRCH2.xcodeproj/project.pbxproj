@@ -13,6 +13,8 @@
 		DBC25FBD224740110069A954 /* AddImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC25FBC224740110069A954 /* AddImageViewController.swift */; };
 		DBC25FBF22475BEB0069A954 /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC25FBE22475BEB0069A954 /* UIImageView.swift */; };
 		DBC25FC1224767360069A954 /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC25FC0224767360069A954 /* ConfirmationViewController.swift */; };
+		DBC25FC322477BDB0069A954 /* Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC25FC222477BDB0069A954 /* Bluetooth.swift */; };
+		DBC25FC622477C560069A954 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC25FC522477C560069A954 /* CoreBluetooth.framework */; };
 		DBCDB8C92246D65E00B04738 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCDB8C82246D65E00B04738 /* AppDelegate.swift */; };
 		DBCDB8CB2246D65E00B04738 /* ComputerListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCDB8CA2246D65E00B04738 /* ComputerListViewController.swift */; };
 		DBCDB8CE2246D65E00B04738 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBCDB8CC2246D65E00B04738 /* Main.storyboard */; };
@@ -28,6 +30,8 @@
 		DBC25FBC224740110069A954 /* AddImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddImageViewController.swift; sourceTree = "<group>"; };
 		DBC25FBE22475BEB0069A954 /* UIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImageView.swift; path = ../../../Whatsit/Whatsit/UIImageView.swift; sourceTree = "<group>"; };
 		DBC25FC0224767360069A954 /* ConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConfirmationViewController.swift; path = MNRCH2/Controller/ConfirmationViewController.swift; sourceTree = SOURCE_ROOT; };
+		DBC25FC222477BDB0069A954 /* Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bluetooth.swift; sourceTree = "<group>"; };
+		DBC25FC522477C560069A954 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		DBCDB8C52246D65E00B04738 /* MNRCH2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MNRCH2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBCDB8C82246D65E00B04738 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DBCDB8CA2246D65E00B04738 /* ComputerListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerListViewController.swift; sourceTree = "<group>"; };
@@ -42,17 +46,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBC25FC622477C560069A954 /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DBC25FC422477C560069A954 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DBC25FC522477C560069A954 /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DBCDB8BC2246D65E00B04738 = {
 			isa = PBXGroup;
 			children = (
 				DBCDB8C72246D65E00B04738 /* MNRCH2 */,
 				DBCDB8C62246D65E00B04738 /* Products */,
+				DBC25FC422477C560069A954 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +85,7 @@
 				DBCDB8E122471A7B00B04738 /* View */,
 				DBCDB8E222471A8500B04738 /* Controller */,
 				DBCDB8C82246D65E00B04738 /* AppDelegate.swift */,
+				DBC25FC222477BDB0069A954 /* Bluetooth.swift */,
 				DBC25FB62247333E0069A954 /* String.swift */,
 				DBCDB8CF2246D65F00B04738 /* Assets.xcassets */,
 				DBCDB8D42246D65F00B04738 /* Info.plist */,
@@ -184,6 +199,7 @@
 				DBC25FC1224767360069A954 /* ConfirmationViewController.swift in Sources */,
 				DBC25FB72247333E0069A954 /* String.swift in Sources */,
 				DBC25FBD224740110069A954 /* AddImageViewController.swift in Sources */,
+				DBC25FC322477BDB0069A954 /* Bluetooth.swift in Sources */,
 				DBCDB8CB2246D65E00B04738 /* ComputerListViewController.swift in Sources */,
 				DBC25FBB22473F520069A954 /* PairComputerViewController.swift in Sources */,
 				DBCDB8C92246D65E00B04738 /* AppDelegate.swift in Sources */,

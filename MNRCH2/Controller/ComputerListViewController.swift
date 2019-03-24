@@ -73,6 +73,11 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         
         return cell
     }
+    
+    func addComputerToList(computer: Computer) {
+        deviceList.append(computer)
+        saveComputers(computersArray: deviceList)
+    }
 
     func saveComputers(computersArray: [Computer]) {
         
