@@ -50,7 +50,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
                 imageView.image = image
                 imageView.roundCornersForAspectFit(radius: 15)
                 imagePicker.dismiss(animated: true, completion: nil)
-    
+                showGuessAlert()
             } else {
                 print("There was an error picking the image")
             }
@@ -174,5 +174,28 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
     func usePhotoLibrary() {
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
+    }
+    
+    /**
+     Displays an alert to show the guess
+     
+     - Parameter guess: string representing the guess
+     
+     - Throws:
+     
+     - Returns:
+     */
+    func showGuessAlert() {
+        let alert = UIAlertController(title: String.EMPTY, message: String.IS_IT + String.SPACE + String.DOUBLE_QUOTE + String.LAPTOP + String.DOUBLE_QUOTE, preferredStyle: .alert)
+        alert.isModalInPopover = true
+        
+        alert.addAction(UIAlertAction(title: String.YES, style: .default, handler: { (UIAlertAction) in
+            self.performSegue(withIdentifier: "showConfirmationView", sender: self)
+        }))
+        
+        alert.addAction(UIAlertAction(title: String.NO, style: .default, handler: { (UIAlertAction) in
+          
+        }))
+        self.present(alert,animated: true, completion: nil )
     }
 }
