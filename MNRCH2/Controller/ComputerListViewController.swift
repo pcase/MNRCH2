@@ -81,8 +81,12 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
 
     func saveComputers(computersArray: [Computer]) {
         
-        let computersData = NSKeyedArchiver.archivedData(withRootObject: computersArray)
-        UserDefaults.standard.set(computersData, forKey: "computers")
+        do {
+            let computersData = try NSKeyedArchiver.archivedData(withRootObject: computersArray, requiringSecureCoding: false)
+            UserDefaults.standard.set(computersData, forKey: "computers")
+        } catch {
+            print("Error occurred during data archival")
+        }
     }
     
     func loadComputers() -> [Computer] {
@@ -92,14 +96,15 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
             return computersArray
         }
         
-        guard let tempArray = NSKeyedUnarchiver.unarchiveObject(with: computersData as Data) as? [Computer] else {
+        do { guard let tempArray = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(computersData as Data) as? [Computer] else {
             print("Could not unarchive from computersData")
             return computersArray
+            }
+            computersArray.append(contentsOf: tempArray)
+        } catch {
+             print("Error occurred during data unarchival")
         }
         
-        computersArray.append(contentsOf: tempArray)
-
         return computersArray
     }
 }
-
