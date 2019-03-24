@@ -25,19 +25,8 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         tableView.estimatedRowHeight = 600
         
         let computerList = loadComputers()
-        if computerList.count == 0 {
-            populateList()
-            saveComputers(computersArray: deviceList)
-        } else {
-            deviceList.append(contentsOf: computerList)
-        }
-    }
-    
-    func populateList() {
-        for _ in 1...5 {
-            let computer = Computer(date: "03/22/19", MAC: "01:02:03:04", image: nil)
-            deviceList.append(computer)
-        }
+        deviceList.removeAll()
+        deviceList.append(contentsOf: computerList)
     }
     
     @IBAction func pairButtonClicked(_ sender: UIButton) {
@@ -69,14 +58,20 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         let computer = deviceList[indexPath.row]
         cell.MACAddress.text = computer.MACAddress
         cell.dateAdded.text = computer.dateAdded
-//        cell.deviceImage.image=UIImage(cgImage: <#T##CGImage#>)
+        cell.imageView?.image = computer.image
         
         return cell
     }
     
     func addComputerToList(computer: Computer) {
-        deviceList.append(computer)
-        saveComputers(computersArray: deviceList)
+        for device in deviceList {
+            if device.MACAddress == computer.MACAddress {
+                showDuplicateDeviceError()
+            } else {
+                deviceList.append(computer)
+                saveComputers(computersArray: deviceList)
+            }
+        }
     }
 
     func clearComputers() {
@@ -98,13 +93,14 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     func loadComputers() -> [Computer] {
         var computersArray: [Computer] = []
         guard let computersData = UserDefaults.standard.object(forKey: "computers") as? NSData else {
-            print("'computers' not found in UserDefaults")
-            return computersArray
+                print("'computers' not found in UserDefaults")
+                return computersArray
         }
         
-        do { guard let tempArray = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(computersData as Data) as? [Computer] else {
-            print("Could not unarchive from computersData")
-            return computersArray
+        do {
+            guard let tempArray = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(computersData as Data) as? [Computer] else {
+                    print("Could not unarchive from computersData")
+                    return computersArray
             }
             computersArray.append(contentsOf: tempArray)
         } catch {
@@ -112,5 +108,21 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         }
         
         return computersArray
+    }
+    
+    /**
+     Displays an alert for duplicate computer
+     
+     - Parameter none:
+     
+     - Throws:
+     
+     - Returns:
+     */
+    func showDuplicateDeviceError() {
+        let alert = UIAlertController(title: String.EMPTY, message: String.DUPLICATE_DEVICE, preferredStyle: .alert)
+        alert.isModalInPopover = true
+        
+        self.present(alert,animated: true, completion: nil )
     }
 }
