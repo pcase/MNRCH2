@@ -26,6 +26,15 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
         super.didReceiveMemoryWarning()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if segue.destination is ConfirmationViewController
+        {
+            let vc = segue.destination as? ConfirmationViewController
+            vc?.image = self.imageView.image
+        }
+    }
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -35,7 +44,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
     }
     
     /**
-     Performs image recognition
+     Pick image
      
      - Parameter picker:
      info:

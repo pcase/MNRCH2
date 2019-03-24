@@ -44,6 +44,8 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         performSegue(withIdentifier: "showAddImageView", sender: self)
     }
     
+    @IBAction func unwindToVC1(segue:UIStoryboardSegue) { }
+    
     /**
      Returns number of components in vie
      
@@ -56,8 +58,6 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-    
-
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return deviceList.count

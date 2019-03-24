@@ -10,12 +10,28 @@ import UIKit
 
 class ConfirmationViewController: UIViewController {
     
+    var image: UIImage!
     @IBOutlet weak var imageView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        imageView.image = image
+        imageView.roundCornersForAspectFit(radius: 15)
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    
+    @IBAction func cancelButtonClicked(_ sender: Any) {
+         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+    }
+    
+    
+    @IBAction func saveButtonClicked(_ sender: Any) {
+         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+    }
+    
 }
