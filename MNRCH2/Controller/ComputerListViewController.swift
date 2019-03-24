@@ -64,14 +64,19 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func addComputerToList(computer: Computer) {
-        for device in deviceList {
-            if device.MACAddress == computer.MACAddress {
-                showDuplicateDeviceError()
-            } else {
-                deviceList.append(computer)
-                saveComputers(computersArray: deviceList)
+        if deviceList.count == 0 {
+            deviceList.append(computer)
+        } else {
+            for device in deviceList {
+                if device.MACAddress == computer.MACAddress {
+                    showDuplicateDeviceError()
+                } else {
+                    deviceList.append(computer)
+                    saveComputers(computersArray: deviceList)
+                }
             }
         }
+        self.tableView.reloadData()
     }
 
     func clearComputers() {
