@@ -79,8 +79,14 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         saveComputers(computersArray: deviceList)
     }
 
+    func clearComputers() {
+        let domain = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+    }
+    
     func saveComputers(computersArray: [Computer]) {
-        
+        clearComputers()
         do {
             let computersData = try NSKeyedArchiver.archivedData(withRootObject: computersArray, requiringSecureCoding: false)
             UserDefaults.standard.set(computersData, forKey: "computers")

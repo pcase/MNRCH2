@@ -11,18 +11,23 @@ import CoreBluetooth
 
 class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDelegate {
     
+    let BLEService = "EC00"
+    let BLECharacteristic = "ec0e"
+    var centralManager: CBCentralManager?
+    var mainPeripheral:CBPeripheral? = nil
+    var mainCharacteristic:CBCharacteristic? = nil
     var image: UIImage!
     @IBOutlet weak var imageView: UIImageView!
-    var manager:CBCentralManager? = nil
     var computer: Computer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.centralManager = CBCentralManager(delegate: nil, queue: nil)
+        self.centralManager?.delegate = self
+        
         imageView.image = image
         imageView.roundCornersForAspectFit(radius: 15)
-        
-        manager = CBCentralManager(delegate: self, queue: nil);
     }
     
     override func didReceiveMemoryWarning() {
@@ -51,34 +56,52 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     
     // MARK: BLE Scanning
     func scanBLEDevices() {
-        //manager?.scanForPeripherals(withServices: [CBUUID.init(string: parentView!.BLEService)], options: nil)
         
         //if you pass nil in the first parameter, then scanForPeriperals will look for any devices.
-        manager?.scanForPeripherals(withServices: nil, options: nil)
+        centralManager?.scanForPeripherals(withServices: nil, options: nil)
         
         //stop scanning after 3 seconds
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             self.stopScanForBLEDevices()
         }
     }
     
     func stopScanForBLEDevices() {
         showTimeoutAlert()
-        manager?.stopScan()
+        centralManager?.stopScan()
         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
     }
     
     // MARK: - CBCentralManagerDelegate Methods
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        
-        showFoundOneAlert()
-        
-        computer = Computer(date: getDate(), MAC: "AA:BB:CC:DD:EE:FF", image: image)
-        
+    
+    func centralManager(_ manager: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData advertisement: [String : Any], rssi: NSNumber) {
+
+        var MACAddress: String = ""
+        if let name = peripheral.name {
+            MACAddress = name
+            print("Found \"\(name)\" peripheral (RSSI: \(rssi))")
+        } else {
+            MACAddress = "AA:BB:CC:DD:EE:FF"
+            print("Found unnamed peripheral (RSSI: \(rssi))")
+        }
+        computer = Computer(date: getDate(), MAC: MACAddress, image: image)
+        centralManager?.stopScan()
         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
     }
     
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+    func centralManagerDidUpdateState(_ manager: CBCentralManager) {
+        switch manager.state {
+        case .poweredOff:
+            print("BLE has powered off")
+            centralManager?.stopScan()
+        case .poweredOn:
+            print("BLE is now powered on")
+            centralManager?.scanForPeripherals(withServices: nil, options: nil)
+        case .resetting: print("BLE is resetting")
+        case .unauthorized: print("Unauthorized BLE state")
+        case .unknown: print("Unknown BLE state")
+        case .unsupported: print("This platform does not support BLE")
+        }
     }
     
     func getDate() -> String {
@@ -86,6 +109,98 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         let formatter = DateFormatter()
         formatter.dateFormat = "dd.MM.yyyy HH:mm:ss"
         return formatter.string(from: date)
+    }
+    
+    // MARK: CBPeripheralDelegate Methods
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        
+        for service in peripheral.services! {
+            
+            print("Service found with UUID: " + service.uuid.uuidString)
+            
+            //device information service
+            if (service.uuid.uuidString == "180A") {
+                peripheral.discoverCharacteristics(nil, for: service)
+            }
+            
+            //GAP (Generic Access Profile) for Device Name
+            // This replaces the deprecated CBUUIDGenericAccessProfileString
+            if (service.uuid.uuidString == "1800") {
+                peripheral.discoverCharacteristics(nil, for: service)
+            }
+            
+            //Bluno Service
+            if (service.uuid.uuidString == BLEService) {
+                peripheral.discoverCharacteristics(nil, for: service)
+            }
+        }
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        
+        //get device name
+        if (service.uuid.uuidString == "1800") {
+            
+            for characteristic in service.characteristics! {
+                
+                if (characteristic.uuid.uuidString == "2A00") {
+                    peripheral.readValue(for: characteristic)
+                    print("Found Device Name Characteristic")
+                }
+            }
+        }
+        
+        if (service.uuid.uuidString == "180A") {
+            
+            for characteristic in service.characteristics! {
+                
+                if (characteristic.uuid.uuidString == "2A29") {
+                    peripheral.readValue(for: characteristic)
+                    print("Found a Device Manufacturer Name Characteristic")
+                } else if (characteristic.uuid.uuidString == "2A23") {
+                    peripheral.readValue(for: characteristic)
+                    print("Found System ID")
+                }
+            }
+        }
+        
+        if (service.uuid.uuidString == BLEService) {
+            
+            for characteristic in service.characteristics! {
+                
+                if (characteristic.uuid.uuidString == BLECharacteristic) {
+                    //we'll save the reference, we need it to write data
+                    mainCharacteristic = characteristic
+                    
+                    //Set Notify is useful to read incoming data async
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    print("Found Mac Data Characteristic")
+                }
+            }
+        }
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        
+        if (characteristic.uuid.uuidString == "2A00") {
+            //value for device name recieved
+            let deviceName = characteristic.value
+            print(deviceName ?? "No Device Name")
+        } else if (characteristic.uuid.uuidString == "2A29") {
+            //value for manufacturer name recieved
+            let manufacturerName = characteristic.value
+            print(manufacturerName ?? "No Manufacturer Name")
+        } else if (characteristic.uuid.uuidString == "2A23") {
+            //value for system ID recieved
+            let systemID = characteristic.value
+            print(systemID ?? "No System ID")
+        } else if (characteristic.uuid.uuidString == BLECharacteristic) {
+            //data received
+            if(characteristic.value != nil) {
+                let stringValue = String(data: characteristic.value!, encoding: String.Encoding.utf8)!
+            }
+        }
     }
     
     /**
