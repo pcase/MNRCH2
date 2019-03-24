@@ -203,7 +203,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
         }))
         
         alert.addAction(UIAlertAction(title: String.NO, style: .default, handler: { (UIAlertAction) in
-          
+           self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
         }))
         self.present(alert,animated: true, completion: nil )
     }
