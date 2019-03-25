@@ -91,12 +91,13 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         var found: Bool = false
         for comp in computers {
             if comp.MACAddress == computer.MACAddress {
-//                    showDuplicateDeviceError()
                 found = true;
             }
         }
         if !found {
             computers.append(computer)
+        } else {
+//            showDuplicateDeviceError()
         }
         saveComputers()
         currentComputer = nil;
@@ -114,12 +115,8 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
      */
     func showDuplicateDeviceError() {
         let alert = UIAlertController(title: String.EMPTY, message: String.DUPLICATE_DEVICE, preferredStyle: .alert)
-        
+    
         self.present(alert, animated: true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-            alert.dismiss(animated: true, completion: nil)
-        })
     }
     
     //MARK: Private Methods

@@ -74,15 +74,8 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     func stopScanForBLEDevices() {
         print("stop scanning")
         centralManager?.stopScan()
-        
+//        self.showTimeoutAlert()
         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
-//        for controller in self.navigationController!.viewControllers as Array {
-//            if let vc = controller as? ComputerListViewController {
-//                vc.currentComputer = nil
-//                _ =  self.navigationController!.popToViewController(controller, animated: true)
-//                break
-//            }
-//        }
     }
     
     // MARK: - CBCentralManagerDelegate Methods
@@ -226,11 +219,12 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
      */
     func showTimeoutAlert() {
         let alert = UIAlertController(title: String.EMPTY, message: String.NO_DEVICES_FOUND, preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.dismiss(animated: false, completion: nil)
+            self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+        }))
         
         self.present(alert, animated: true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-            alert.dismiss(animated: true, completion: nil)
-        })
     }
 }
