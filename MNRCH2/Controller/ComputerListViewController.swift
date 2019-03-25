@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import VisualRecognitionV3
 import SVProgressHUD
 import os.log
 
@@ -21,15 +22,19 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        SVProgressHUD.show()
         if let savedComputers = loadComputers() {
             computers.removeAll()
             computers.append(contentsOf: savedComputers)
         }
+        SVProgressHUD.dismiss()
         
         if let currentCurrentComputer = currentComputer {
             addComputerToList(computer: currentCurrentComputer)
         }
+        SVProgressHUD.show()
         saveComputers()
+        SVProgressHUD.dismiss()
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -47,7 +52,9 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         if let currentCurrentComputer = currentComputer {
             addComputerToList(computer: currentCurrentComputer)
         }
+        SVProgressHUD.show()
         saveComputers()
+        SVProgressHUD.dismiss()
     }
     
     @IBAction func pairButtonClicked(_ sender: UIButton) {
@@ -100,7 +107,9 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         } else {
 //            showDuplicateDeviceError()
         }
+        SVProgressHUD.show()
         saveComputers()
+        SVProgressHUD.dismiss()
         currentComputer = nil;
         self.tableView.reloadData()
     }

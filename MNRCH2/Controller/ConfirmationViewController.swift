@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreBluetooth
+import SVProgressHUD
 
 class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDelegate, UINavigationControllerDelegate {
     
@@ -45,6 +46,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     @IBAction func saveButtonClicked(_ sender: Any) {
         self.centralManager = CBCentralManager(delegate: nil, queue: nil)
         self.centralManager?.delegate = self
+        SVProgressHUD.show()
         scanBLEDevices()
     }
     
@@ -72,6 +74,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     }
     
     func stopScanForBLEDevices() {
+        SVProgressHUD.dismiss()
         print("stop scanning")
         centralManager?.stopScan()
 //        self.showTimeoutAlert()
