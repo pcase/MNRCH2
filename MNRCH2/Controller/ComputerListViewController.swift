@@ -36,7 +36,7 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         if let currentCurrentComputer = currentComputer {
             addComputerToList(computer: currentCurrentComputer)
         }
-        saveComputers(computersArray: deviceList)
+//        saveComputers(computersArray: deviceList)
     }
     
     @IBAction func pairButtonClicked(_ sender: UIButton) {
@@ -84,11 +84,10 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         } else {
             for device in deviceList {
                 if device.MACAddress == computer.MACAddress {
-//                    showDuplicateDeviceError()
-                    print("duplicate device")
+                    showDuplicateDeviceError()
                 } else {
                     deviceList.append(computer)
-                    saveComputers(computersArray: deviceList)
+//                    saveComputers(computersArray: deviceList)
                 }
             }
         }
@@ -141,14 +140,10 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
      - Returns:
      */
     func showDuplicateDeviceError() {
-        print("duplicate device")
         let alert = UIAlertController(title: String.EMPTY, message: String.DUPLICATE_DEVICE, preferredStyle: .alert)
-        alert.isModalInPopover = true
         
-        alert.addAction(UIAlertAction(title: String.OK, style: .default, handler: { (UIAlertAction) in
-            alert.dismiss(animated: false, completion: nil)
-        }))
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
         
-        self.present(alert,animated: true, completion: nil )
+        self.present(alert, animated: true)
     }
 }

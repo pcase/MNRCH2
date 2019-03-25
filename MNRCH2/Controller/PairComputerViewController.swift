@@ -113,7 +113,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
                 }
             }
             
-            // denied - The user has previously denied access.
+        // denied - The user has previously denied access.
         // restricted - The user can't grant access due to restrictions.
         case .denied, .restricted:
             self.cameraAccessNeededAlert()
@@ -205,8 +205,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
             for controller in self.navigationController!.viewControllers as Array {
                 if let vc = controller as? ComputerListViewController {
                     vc.currentComputer = nil
-                    _ = self.navigationController!.popToRootViewController(animated: false)
-//                    _ =  self.navigationController!.popToViewController(controller, animated: true)
+                    _ =  self.navigationController!.popToViewController(controller, animated: true)
                     break
                 }
             }

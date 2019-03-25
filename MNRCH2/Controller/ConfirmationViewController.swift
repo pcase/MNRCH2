@@ -22,9 +22,6 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        self.centralManager = CBCentralManager(delegate: nil, queue: nil)
-//        self.centralManager?.delegate = self
 
         imageView.image = image
         imageView.roundCornersForAspectFit(radius: 15)
@@ -35,6 +32,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     }
     
     @IBAction func cancelButtonClicked(_ sender: Any) {
+        centralManager?.stopScan()
         for controller in self.navigationController!.viewControllers as Array {
             if let vc = controller as? ComputerListViewController {
                 vc.currentComputer = nil
@@ -68,12 +66,12 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         
         //stop scanning after 3 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.showTimeoutAlert()
             self.stopScanForBLEDevices()
         }
     }
     
     func stopScanForBLEDevices() {
-//        showTimeoutAlert()
         print("stop scanning")
         centralManager?.stopScan()
         
@@ -220,25 +218,10 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
      - Returns:
      */
     func showTimeoutAlert() {
-        let alert = UIAlertController(title: String.EMPTY, message: String.TIMED_OUT, preferredStyle: .alert)
-        alert.isModalInPopover = true
-    
-        self.present(alert,animated: true, completion: nil )
-    }
-    
-    /**
-     Displays an alert to announce discovery
-     
-     - Parameter none:
-     
-     - Throws:
-     
-     - Returns:
-     */
-    func showFoundOneAlert() {
-        let alert = UIAlertController(title: String.EMPTY, message: String.FOUND_ONE, preferredStyle: .alert)
-        alert.isModalInPopover = true
+        let alert = UIAlertController(title: String.EMPTY, message: String.NO_DEVICES_FOUND, preferredStyle: .alert)
         
-        self.present(alert,animated: true, completion: nil )
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true)
     }
 }
