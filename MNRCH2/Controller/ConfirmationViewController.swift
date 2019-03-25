@@ -34,11 +34,9 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         super.didReceiveMemoryWarning()
     }
     
-    
     @IBAction func cancelButtonClicked(_ sender: Any) {
          performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
     }
-    
     
     @IBAction func saveButtonClicked(_ sender: Any) {
         scanBLEDevices()
@@ -48,7 +46,8 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         if segue.identifier == "unwindSegueToVC1" {
             if let destinationVC = segue.destination as? ComputerListViewController {
                 if let currentComputer = computer {
-                    destinationVC.addComputerToList(computer: currentComputer)
+                    destinationVC.currentComputer = currentComputer
+//                    destinationVC.addComputerToList(computer: currentComputer)
                 }
             }
         }

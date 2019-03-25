@@ -15,6 +15,8 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     
     var deviceList:[Computer] = []
     
+    var currentComputer: Computer? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,7 +35,12 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         performSegue(withIdentifier: "showAddImageView", sender: self)
     }
     
-    @IBAction func unwindToVC1(segue:UIStoryboardSegue) { }
+    @IBAction func unwindToVC1(segue:UIStoryboardSegue) {
+        print("did unwinding")
+        if let currentCurrentComputer = currentComputer {
+            addComputerToList(computer: currentCurrentComputer)
+        }
+    }
     
     /**
      Returns number of components in vie
@@ -125,8 +132,19 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
      - Returns:
      */
     func showDuplicateDeviceError() {
+        print("duplicate device")
         let alert = UIAlertController(title: String.EMPTY, message: String.DUPLICATE_DEVICE, preferredStyle: .alert)
         alert.isModalInPopover = true
+        
+        alert.addAction(UIAlertAction(title: String.OK, style: .default, handler: { (UIAlertAction) in
+            alert.dismiss(animated: false, completion: nil)
+            for controller in self.navigationController!.viewControllers as Array {
+                if controller.isKind(of: ComputerListViewController.self) {
+                    _ =  self.navigationController!.popToViewController(controller, animated: true)
+                    break
+                }
+            }
+        }))
         
         self.present(alert,animated: true, completion: nil )
     }
