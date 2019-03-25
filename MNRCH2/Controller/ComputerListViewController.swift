@@ -125,7 +125,11 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     func showDuplicateDeviceError() {
         let alert = UIAlertController(title: String.EMPTY, message: String.DUPLICATE_DEVICE, preferredStyle: .alert)
     
-        self.present(alert, animated: true)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.dismiss(animated: false, completion: nil)
+        }))
+        
+        self.present(alert, animated: false, completion: nil)
     }
     
     //MARK: Private Methods
