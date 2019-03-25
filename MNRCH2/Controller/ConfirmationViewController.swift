@@ -9,6 +9,7 @@
 import UIKit
 import CoreBluetooth
 import SVProgressHUD
+import os.log
 
 class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDelegate, UINavigationControllerDelegate {
     
@@ -76,7 +77,6 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     
     func stopScanForBLEDevices() {
         SVProgressHUD.dismiss()
-        print("stop scanning")
         centralManager?.stopScan()
 //        self.showTimeoutAlert()
         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
@@ -101,15 +101,15 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     func centralManagerDidUpdateState(_ manager: CBCentralManager) {
         switch manager.state {
         case .poweredOff:
-            print("BLE has powered off")
+            os_log("BLE has powered off", log: OSLog.default, type: .debug)
             centralManager?.stopScan()
         case .poweredOn:
-            print("BLE is now powered on")
+            os_log("BLE is now powered on", log: OSLog.default, type: .debug)
             centralManager?.scanForPeripherals(withServices: nil, options: nil)
-        case .resetting: print("BLE is resetting")
-        case .unauthorized: print("Unauthorized BLE state")
-        case .unknown: print("Unknown BLE state")
-        case .unsupported: print("This platform does not support BLE")
+        case .resetting: os_log("BLE is resetting", log: OSLog.default, type: .debug)
+        case .unauthorized: os_log("Unauthorized BLE state", log: OSLog.default, type: .debug)
+        case .unknown: os_log("Unknown BLE state", log: OSLog.default, type: .debug)
+        case .unsupported: os_log("This platform does not support BLE", log: OSLog.default, type: .debug)
         }
     }
     
@@ -126,8 +126,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         
         for service in peripheral.services! {
             
-            print("Service found with UUID: " + service.uuid.uuidString)
-            
+            print("Service found with UUID: ")
             //device information service
             if (service.uuid.uuidString == "180A") {
                 peripheral.discoverCharacteristics(nil, for: service)
@@ -155,7 +154,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
                 
                 if (characteristic.uuid.uuidString == "2A00") {
                     peripheral.readValue(for: characteristic)
-                    print("Found Device Name Characteristic")
+                    os_log("Found Device Name Characteristic", log: OSLog.default, type: .debug)
                 }
             }
         }
@@ -166,10 +165,10 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
                 
                 if (characteristic.uuid.uuidString == "2A29") {
                     peripheral.readValue(for: characteristic)
-                    print("Found a Device Manufacturer Name Characteristic")
+                    os_log("Found a Device Manufacturer Name Characteristic", log: OSLog.default, type: .debug)
                 } else if (characteristic.uuid.uuidString == "2A23") {
                     peripheral.readValue(for: characteristic)
-                    print("Found System ID")
+                    os_log("Found System ID", log: OSLog.default, type: .debug)
                 }
             }
         }
@@ -184,7 +183,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
                     
                     //Set Notify is useful to read incoming data async
                     peripheral.setNotifyValue(true, for: characteristic)
-                    print("Found Mac Data Characteristic")
+                    os_log("Found Mac Data Characteristic", log: OSLog.default, type: .debug)
                 }
             }
         }

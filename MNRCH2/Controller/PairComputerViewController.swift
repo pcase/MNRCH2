@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import SVProgressHUD
 import VisualRecognitionV3
+import os.log
 
 class PairComputerViewController: UIViewController, UIImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UINavigationControllerDelegate {
     
@@ -82,7 +83,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
                     }
                     
                     guard let classifiedImages = response?.result else {
-                        print("Failed to classify the image")
+                        os_log("Failed to classify the image", log: OSLog.default, type: .error)
                         return
                     }
                     
@@ -106,7 +107,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
                     }
                 }
             } else {
-                print("There was an error picking the image")
+                os_log("There was an error picking the image", log: OSLog.default, type: .error)
             }
         }
     
