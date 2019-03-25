@@ -9,12 +9,18 @@
 import UIKit
 import AVFoundation
 import SVProgressHUD
+import VisualRecognitionV3
 
 class PairComputerViewController: UIViewController, UIImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UINavigationControllerDelegate {
     
     @IBOutlet weak var imageView: UIImageView!
+    
+    let apiKey = "41T3884Bc5ufPS3fwMi-PjP4WQA_I8ZF_tfn4WIaJ_Ls"
+    let version = "2018-07-17"
     var imagePicker = UIImagePickerController()
     var useCamera : Bool = false
+    var timer:Timer?
+    var classificationResults : [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,20 +61,68 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
      */
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
     
+            SVProgressHUD.show()
+            
+            // Do image recognition
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
                 imageView.image = image
                 imageView.roundCornersForAspectFit(radius: 15)
                 imagePicker.dismiss(animated: true, completion: nil)
-                showGuessAlert()
+                
+                let visualRecognition = VisualRecognition(version: version, apiKey: apiKey)
+                let imageData = image.jpegData(compressionQuality: 0.01)
+                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let fileURL = documentsURL.appendingPathComponent("tempImage.jpg")
+                try? imageData?.write(to: fileURL, options: [])
+                let failure = { (error: Error) in print(error) }
+                
+                visualRecognition.classify(imagesFile: fileURL) { response, error in
+                    if let error = error {
+                        print(error)
+                    }
+                    
+                    guard let classifiedImages = response?.result else {
+                        print("Failed to classify the image")
+                        return
+                    }
+                    
+                    let classes = classifiedImages.images.first!.classifiers.first!.classes
+                    self.classificationResults = []
+                    
+                    for index in 0..<classes.count {
+                        self.classificationResults.append(classes[index].className)
+                    }
+                    
+                    print(classifiedImages)
+                    
+                    DispatchQueue.main.async {
+                        SVProgressHUD.dismiss()
+                        if self.isLaptop(guess: self.classificationResults[0]) {
+                            self.performSegue(withIdentifier: "showConfirmationView", sender: self)
+//                            self.showGuessAlert(guess: self.classificationResults[0])
+                        } else {
+                            self.showNotLaptopAlert()
+                        }
+                    }
+                }
             } else {
                 print("There was an error picking the image")
             }
         }
     
+    func isLaptop(guess: String) -> Bool {
+        let lowercasedGuess = guess.lowercased()
+        if lowercasedGuess.contains("laptop") || lowercasedGuess.contains("computer") {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     /**
      Called after image source is specified. If camera is chosen, camera permission is checked, and if allowed, the camera
      is displayed. If photo library is chosen, the photo library is displayed.
-     
+     (
      - Parameter none:
      
      - Throws:
@@ -186,6 +240,31 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
     }
     
     /**
+     Displays an alert to notify the image is not a laptop
+     
+     - Parameter guess: string representing the guess
+     
+     - Throws:
+     
+     - Returns:
+     */
+    func showNotLaptopAlert() {
+        let alert = UIAlertController(title: String.EMPTY, message: String.NOT_LAPTOP, preferredStyle: .alert)
+        alert.isModalInPopover = true
+        
+        alert.addAction(UIAlertAction(title: String.OK, style: .default, handler: { (UIAlertAction) in
+            for controller in self.navigationController!.viewControllers as Array {
+                if let vc = controller as? ComputerListViewController {
+                    vc.currentComputer = nil
+                    _ =  self.navigationController!.popToViewController(controller, animated: true)
+                    break
+                }
+            }
+        }))
+        self.present(alert,animated: true, completion: nil )
+    }
+    
+    /**
      Displays an alert to show the guess
      
      - Parameter guess: string representing the guess
@@ -194,8 +273,8 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
      
      - Returns:
      */
-    func showGuessAlert() {
-        let alert = UIAlertController(title: String.EMPTY, message: String.IS_IT + String.SPACE + String.DOUBLE_QUOTE + String.LAPTOP + String.DOUBLE_QUOTE, preferredStyle: .alert)
+    func showGuessAlert(guess: String) {
+        let alert = UIAlertController(title: String.EMPTY, message: String.IS_IT + String.SPACE + String.DOUBLE_QUOTE + guess + String.DOUBLE_QUOTE, preferredStyle: .alert)
         alert.isModalInPopover = true
         
         alert.addAction(UIAlertAction(title: String.YES, style: .default, handler: { (UIAlertAction) in

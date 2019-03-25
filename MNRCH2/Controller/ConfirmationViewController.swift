@@ -20,6 +20,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     var image: UIImage!
     @IBOutlet weak var imageView: UIImageView!
     var computer: Computer?
+    var timer:Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()

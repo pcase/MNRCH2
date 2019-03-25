@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import VisualRecognitionV3
 import SVProgressHUD
 import os.log
 
