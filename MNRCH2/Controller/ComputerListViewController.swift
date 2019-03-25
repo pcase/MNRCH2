@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 import os.log
 
 class ComputerListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate {
