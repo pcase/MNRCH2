@@ -31,6 +31,13 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         deviceList.append(contentsOf: computerList)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let currentCurrentComputer = currentComputer {
+            addComputerToList(computer: currentCurrentComputer)
+        }
+        saveComputers(computersArray: deviceList)
+    }
+    
     @IBAction func pairButtonClicked(_ sender: UIButton) {
         performSegue(withIdentifier: "showAddImageView", sender: self)
     }
@@ -138,12 +145,6 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         
         alert.addAction(UIAlertAction(title: String.OK, style: .default, handler: { (UIAlertAction) in
             alert.dismiss(animated: false, completion: nil)
-            for controller in self.navigationController!.viewControllers as Array {
-                if controller.isKind(of: ComputerListViewController.self) {
-                    _ =  self.navigationController!.popToViewController(controller, animated: true)
-                    break
-                }
-            }
         }))
         
         self.present(alert,animated: true, completion: nil )

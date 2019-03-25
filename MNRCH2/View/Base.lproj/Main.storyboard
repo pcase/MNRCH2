@@ -148,11 +148,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="nW8-el-gee">
-                                <rect key="frame" x="67" y="298" width="280" height="300"/>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pair With This Computer?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wfT-dm-0YV">
-                                <rect key="frame" x="65" y="158" width="284" height="115"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Pair With This Computer?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wfT-dm-0YV">
+                                <rect key="frame" x="91" y="127" width="233" height="99"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -182,24 +180,21 @@
                                     <action selector="saveButtonClicked:" destination="AjI-lp-way" eventType="touchUpInside" id="Fvi-oA-S3Z"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="nW8-el-gee">
+                                <rect key="frame" x="57" y="298" width="300" height="300"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.83741801979999997" green="0.83743780850000005" blue="0.83742713930000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="rqB-C6-9TI" firstAttribute="leading" secondItem="3Qs-Q7-i70" secondAttribute="leading" id="2P7-iN-QS7"/>
                             <constraint firstItem="U0C-an-NlW" firstAttribute="firstBaseline" secondItem="rqB-C6-9TI" secondAttribute="baseline" id="CHI-6d-E30"/>
                             <constraint firstItem="U0C-an-NlW" firstAttribute="baseline" secondItem="rqB-C6-9TI" secondAttribute="firstBaseline" id="Emx-c1-K0h"/>
-                            <constraint firstItem="wfT-dm-0YV" firstAttribute="leading" secondItem="yWE-Ip-BUH" secondAttribute="leading" constant="65" id="F1L-9C-a0q"/>
                             <constraint firstItem="U0C-an-NlW" firstAttribute="leading" secondItem="yWE-Ip-BUH" secondAttribute="leading" constant="190" id="KOR-yD-x4F"/>
                             <constraint firstAttribute="bottom" secondItem="rqB-C6-9TI" secondAttribute="bottom" constant="20" symbolic="YES" id="Kl3-j9-oOg"/>
-                            <constraint firstItem="nW8-el-gee" firstAttribute="leading" secondItem="yWE-Ip-BUH" secondAttribute="leading" constant="67" id="N9Y-S3-XTL"/>
                             <constraint firstItem="U0C-an-NlW" firstAttribute="top" secondItem="rqB-C6-9TI" secondAttribute="top" id="WjZ-hO-TGJ"/>
-                            <constraint firstItem="nW8-el-gee" firstAttribute="top" secondItem="wfT-dm-0YV" secondAttribute="bottom" constant="25" id="bXD-Yl-ju0"/>
                             <constraint firstItem="yWE-Ip-BUH" firstAttribute="trailing" secondItem="rqB-C6-9TI" secondAttribute="trailing" constant="190" id="czI-S8-DD8"/>
-                            <constraint firstItem="nW8-el-gee" firstAttribute="centerX" secondItem="wfT-dm-0YV" secondAttribute="centerX" id="nEv-OS-pEz"/>
-                            <constraint firstItem="wfT-dm-0YV" firstAttribute="top" secondItem="yWE-Ip-BUH" secondAttribute="top" constant="70" id="rkx-pF-iTU"/>
                             <constraint firstAttribute="trailing" secondItem="U0C-an-NlW" secondAttribute="trailing" id="vLm-OQ-53F"/>
-                            <constraint firstItem="yWE-Ip-BUH" firstAttribute="trailing" secondItem="wfT-dm-0YV" secondAttribute="trailing" constant="65" id="vnr-yu-Sc7"/>
-                            <constraint firstItem="nW8-el-gee" firstAttribute="centerY" secondItem="3Qs-Q7-i70" secondAttribute="centerY" id="wjx-Ku-c3l"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="yWE-Ip-BUH"/>
                     </view>
@@ -211,7 +206,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ADe-Rc-a0t" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="WHH-re-5Ai" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3165.5999999999999" y="141.67916041979012"/>
+            <point key="canvasLocation" x="3165.217391304348" y="141.29464285714286"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="wAv-58-4cK">

@@ -85,7 +85,18 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         }
         computer = Computer(date: getDate(), MAC: MACAddress, image: image)
         centralManager?.stopScan()
-        performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+//        performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+        for controller in self.navigationController!.viewControllers as Array {
+            if let vc = controller as? ComputerListViewController {
+                vc.currentComputer = computer
+                _ =  self.navigationController!.popToViewController(controller, animated: true)
+                    break
+            }
+        }
+//            if controller.isKind(of: ComputerListViewController.self) {
+//                _ =  self.navigationController!.popToViewController(controller, animated: true)
+//                break
+//            }
     }
     
     func centralManagerDidUpdateState(_ manager: CBCentralManager) {

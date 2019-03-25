@@ -203,7 +203,13 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
         }))
         
         alert.addAction(UIAlertAction(title: String.NO, style: .default, handler: { (UIAlertAction) in
-           self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+//           self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+            for controller in self.navigationController!.viewControllers as Array {
+                if let vc = controller as? ComputerListViewController {
+                    _ =  self.navigationController!.popToViewController(controller, animated: true)
+                    break
+                }
+            }
         }))
         self.present(alert,animated: true, completion: nil )
     }
