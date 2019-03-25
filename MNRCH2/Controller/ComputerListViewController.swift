@@ -7,36 +7,46 @@
 //
 
 import UIKit
+import os.log
 
 class ComputerListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var pairButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     
-    var deviceList:[Computer] = []
-    
+    var computers = [Computer]()
     var currentComputer: Computer? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let savedComputers = loadComputers() {
+            computers.removeAll()
+            computers.append(contentsOf: savedComputers)
+        }
+        
+        if let currentCurrentComputer = currentComputer {
+            addComputerToList(computer: currentCurrentComputer)
+        }
+        saveComputers()
         
         tableView.dataSource = self
         tableView.delegate = self
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 600
-        
-        let computerList = loadComputers()
-        deviceList.removeAll()
-        deviceList.append(contentsOf: computerList)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        print("viewWillAppear")
+        if let savedComputers = loadComputers() {
+            computers.removeAll()
+            computers.append(contentsOf: savedComputers)
+        }
+
         if let currentCurrentComputer = currentComputer {
             addComputerToList(computer: currentCurrentComputer)
         }
-//        saveComputers(computersArray: deviceList)
+        saveComputers()
     }
     
     @IBAction func pairButtonClicked(_ sender: UIButton) {
@@ -44,7 +54,6 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     @IBAction func unwindToVC1(segue:UIStoryboardSegue) {
-        print("did unwinding")
         if let currentCurrentComputer = currentComputer {
             addComputerToList(computer: currentCurrentComputer)
         }
@@ -64,13 +73,13 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return deviceList.count
+        return computers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell=tableView.dequeueReusableCell(withIdentifier: "cellReuseIdentifier", for: indexPath) as! TableViewCell
         
-        let computer = deviceList[indexPath.row]
+        let computer = computers[indexPath.row]
         cell.MACAddress.text = computer.MACAddress
         cell.dateAdded.text = computer.dateAdded
         cell.imageView?.image = computer.image
@@ -79,57 +88,21 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func addComputerToList(computer: Computer) {
-        if deviceList.count == 0 {
-            deviceList.append(computer)
-        } else {
-            for device in deviceList {
-                if device.MACAddress == computer.MACAddress {
-                    showDuplicateDeviceError()
-                } else {
-                    deviceList.append(computer)
-//                    saveComputers(computersArray: deviceList)
-                }
+        var found: Bool = false
+        for comp in computers {
+            if comp.MACAddress == computer.MACAddress {
+//                    showDuplicateDeviceError()
+                found = true;
             }
         }
+        if !found {
+            computers.append(computer)
+        }
+        saveComputers()
+        currentComputer = nil;
         self.tableView.reloadData()
     }
 
-    func clearComputers() {
-        let domain = Bundle.main.bundleIdentifier!
-        UserDefaults.standard.removePersistentDomain(forName: domain)
-        UserDefaults.standard.synchronize()
-    }
-    
-    func saveComputers(computersArray: [Computer]) {
-        clearComputers()
-        do {
-            let computersData = try NSKeyedArchiver.archivedData(withRootObject: computersArray, requiringSecureCoding: false)
-            UserDefaults.standard.set(computersData, forKey: "computers")
-        } catch {
-            print("Error occurred during data archival")
-        }
-    }
-    
-    func loadComputers() -> [Computer] {
-        var computersArray: [Computer] = []
-        guard let computersData = UserDefaults.standard.object(forKey: "computers") as? NSData else {
-                print("'computers' not found in UserDefaults")
-                return computersArray
-        }
-        
-        do {
-            guard let tempArray = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(computersData as Data) as? [Computer] else {
-                    print("Could not unarchive from computersData")
-                    return computersArray
-            }
-            computersArray.append(contentsOf: tempArray)
-        } catch {
-             print("Error occurred during data unarchival")
-        }
-        
-        return computersArray
-    }
-    
     /**
      Displays an alert for duplicate computer
      
@@ -142,8 +115,25 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     func showDuplicateDeviceError() {
         let alert = UIAlertController(title: String.EMPTY, message: String.DUPLICATE_DEVICE, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-        
         self.present(alert, animated: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            alert.dismiss(animated: true, completion: nil)
+        })
+    }
+    
+    //MARK: Private Methods
+    
+    private func saveComputers() {
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(computers, toFile: Computer.ArchiveURL.path)
+        if isSuccessfulSave {
+            os_log("Computers successfully saved.", log: OSLog.default, type: .debug)
+        } else {
+            os_log("Failed to save computers...", log: OSLog.default, type: .error)
+        }
+    }
+    
+    private func loadComputers() -> [Computer]?  {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: Computer.ArchiveURL.path) as? [Computer]
     }
 }

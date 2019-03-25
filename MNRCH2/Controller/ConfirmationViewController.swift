@@ -66,7 +66,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         
         //stop scanning after 3 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            self.showTimeoutAlert()
+//            self.showTimeoutAlert()
             self.stopScanForBLEDevices()
         }
     }
@@ -76,6 +76,13 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
         centralManager?.stopScan()
         
         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+//        for controller in self.navigationController!.viewControllers as Array {
+//            if let vc = controller as? ComputerListViewController {
+//                vc.currentComputer = nil
+//                _ =  self.navigationController!.popToViewController(controller, animated: true)
+//                break
+//            }
+//        }
     }
     
     // MARK: - CBCentralManagerDelegate Methods
@@ -90,7 +97,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
             MACAddress = "AA:BB:CC:DD:EE:FF"
             print("Found unnamed peripheral (RSSI: \(rssi))")
         }
-        computer = Computer(date: getDate(), MAC: MACAddress, image: image)
+        computer = Computer(dateAdded: getDate(), MACAddress: MACAddress, image: image)
         stopScanForBLEDevices()
     }
     
@@ -220,8 +227,10 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     func showTimeoutAlert() {
         let alert = UIAlertController(title: String.EMPTY, message: String.NO_DEVICES_FOUND, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-        
         self.present(alert, animated: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            alert.dismiss(animated: true, completion: nil)
+        })
     }
 }
