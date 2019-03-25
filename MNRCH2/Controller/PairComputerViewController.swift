@@ -205,7 +205,8 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
             for controller in self.navigationController!.viewControllers as Array {
                 if let vc = controller as? ComputerListViewController {
                     vc.currentComputer = nil
-                    _ =  self.navigationController!.popToViewController(controller, animated: true)
+                    _ = self.navigationController!.popToRootViewController(animated: false)
+//                    _ =  self.navigationController!.popToViewController(controller, animated: true)
                     break
                 }
             }

@@ -9,7 +9,7 @@
 import UIKit
 import CoreBluetooth
 
-class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDelegate {
+class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDelegate, UINavigationControllerDelegate {
     
     let BLEService = "EC00"
     let BLECharacteristic = "ec0e"
@@ -74,15 +74,10 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     
     func stopScanForBLEDevices() {
 //        showTimeoutAlert()
-        print("timed out")
+        print("stop scanning")
         centralManager?.stopScan()
-        for controller in self.navigationController!.viewControllers as Array {
-            if let vc = controller as? ComputerListViewController {
-                vc.currentComputer = computer
-                _ =  self.navigationController!.popToViewController(controller, animated: true)
-                break
-            }
-        }
+        
+        performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
     }
     
     // MARK: - CBCentralManagerDelegate Methods
@@ -98,14 +93,7 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
             print("Found unnamed peripheral (RSSI: \(rssi))")
         }
         computer = Computer(date: getDate(), MAC: MACAddress, image: image)
-//        centralManager?.stopScan()
-//        for controller in self.navigationController!.viewControllers as Array {
-//            if let vc = controller as? ComputerListViewController {
-//                vc.currentComputer = computer
-//                _ =  self.navigationController!.popToViewController(controller, animated: true)
-//                    break
-//            }
-//        }
+        stopScanForBLEDevices()
     }
     
     func centralManagerDidUpdateState(_ manager: CBCentralManager) {

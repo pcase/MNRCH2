@@ -32,6 +32,7 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear")
         if let currentCurrentComputer = currentComputer {
             addComputerToList(computer: currentCurrentComputer)
         }
