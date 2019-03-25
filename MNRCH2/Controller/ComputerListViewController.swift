@@ -83,7 +83,8 @@ class ComputerListViewController: UIViewController, UITableViewDataSource, UITab
         } else {
             for device in deviceList {
                 if device.MACAddress == computer.MACAddress {
-                    showDuplicateDeviceError()
+//                    showDuplicateDeviceError()
+                    print("duplicate device")
                 } else {
                     deviceList.append(computer)
                     saveComputers(computersArray: deviceList)

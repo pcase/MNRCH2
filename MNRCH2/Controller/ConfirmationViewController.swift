@@ -23,9 +23,9 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.centralManager = CBCentralManager(delegate: nil, queue: nil)
-        self.centralManager?.delegate = self
-        
+//        self.centralManager = CBCentralManager(delegate: nil, queue: nil)
+//        self.centralManager?.delegate = self
+
         imageView.image = image
         imageView.roundCornersForAspectFit(radius: 15)
     }
@@ -35,10 +35,18 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     }
     
     @IBAction func cancelButtonClicked(_ sender: Any) {
-         performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+        for controller in self.navigationController!.viewControllers as Array {
+            if let vc = controller as? ComputerListViewController {
+                vc.currentComputer = nil
+                _ =  self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
     }
     
     @IBAction func saveButtonClicked(_ sender: Any) {
+        self.centralManager = CBCentralManager(delegate: nil, queue: nil)
+        self.centralManager?.delegate = self
         scanBLEDevices()
     }
     
@@ -47,7 +55,6 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
             if let destinationVC = segue.destination as? ComputerListViewController {
                 if let currentComputer = computer {
                     destinationVC.currentComputer = currentComputer
-//                    destinationVC.addComputerToList(computer: currentComputer)
                 }
             }
         }
@@ -66,9 +73,16 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
     }
     
     func stopScanForBLEDevices() {
-        showTimeoutAlert()
+//        showTimeoutAlert()
+        print("timed out")
         centralManager?.stopScan()
-        performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
+        for controller in self.navigationController!.viewControllers as Array {
+            if let vc = controller as? ComputerListViewController {
+                vc.currentComputer = computer
+                _ =  self.navigationController!.popToViewController(controller, animated: true)
+                break
+            }
+        }
     }
     
     // MARK: - CBCentralManagerDelegate Methods
@@ -84,19 +98,14 @@ class ConfirmationViewController: UIViewController, CBCentralManagerDelegate, CB
             print("Found unnamed peripheral (RSSI: \(rssi))")
         }
         computer = Computer(date: getDate(), MAC: MACAddress, image: image)
-        centralManager?.stopScan()
-//        performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
-        for controller in self.navigationController!.viewControllers as Array {
-            if let vc = controller as? ComputerListViewController {
-                vc.currentComputer = computer
-                _ =  self.navigationController!.popToViewController(controller, animated: true)
-                    break
-            }
-        }
-//            if controller.isKind(of: ComputerListViewController.self) {
+//        centralManager?.stopScan()
+//        for controller in self.navigationController!.viewControllers as Array {
+//            if let vc = controller as? ComputerListViewController {
+//                vc.currentComputer = computer
 //                _ =  self.navigationController!.popToViewController(controller, animated: true)
-//                break
+//                    break
 //            }
+//        }
     }
     
     func centralManagerDidUpdateState(_ manager: CBCentralManager) {

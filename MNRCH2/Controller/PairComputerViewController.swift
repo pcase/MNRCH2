@@ -26,8 +26,7 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
         super.didReceiveMemoryWarning()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is ConfirmationViewController
         {
             let vc = segue.destination as? ConfirmationViewController
@@ -203,9 +202,9 @@ class PairComputerViewController: UIViewController, UIImagePickerControllerDeleg
         }))
         
         alert.addAction(UIAlertAction(title: String.NO, style: .default, handler: { (UIAlertAction) in
-//           self.performSegue(withIdentifier: "unwindSegueToVC1", sender: self)
             for controller in self.navigationController!.viewControllers as Array {
                 if let vc = controller as? ComputerListViewController {
+                    vc.currentComputer = nil
                     _ =  self.navigationController!.popToViewController(controller, animated: true)
                     break
                 }
